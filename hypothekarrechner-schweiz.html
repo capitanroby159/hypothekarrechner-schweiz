@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hypothekar-Beratung | Gastrokompass</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+
+<div class="wrap">
+  
+  <div id="inputStage" class="calculator-box wide-mode">
+    
+    <div class="header-image-container">
+        <img src="./img/traumhaus-mit-Garten.png" alt="Traumhaus" class="header-img">
+    </div>
+
+    <header class="header-title">
+      <h1>Finanzierungs-Check</h1>
+      <p>Erfassen Sie die Daten für eine professionelle Tragbarkeits-Analyse.</p>
+    </header>
+
+    <form id="fullForm">
+      
+      <div class="section-divider"><span class="sec-num">1</span> Persönliche Angaben</div>
+      
+      <div class="cols-header">
+        <div class="col-label">Kreditnehmer 1</div>
+        <div class="col-label">Kreditnehmer 2 (Optional)</div>
+      </div>
+
+      <div class="split-grid">
+        <div class="buyer-col">
+          <div class="field-row">
+            <div class="field"><label>Vorname</label><input type="text" id="firstname_b1"></div>
+            <div class="field"><label>Nachname</label><input type="text" id="lastname_b1"></div>
+          </div>
+          <div class="field">
+            <label>Geburtsdatum (Wichtig für Amortisation)</label>
+            <input type="date" id="birthdate_b1">
+          </div>
+          <div class="field"><label>Zivilstand</label>
+            <select id="civil_b1">
+              <option value="ledig">Ledig</option>
+              <option value="verheiratet">Verheiratet</option>
+              <option value="geschieden">Geschieden</option>
+            </select>
+          </div>
+          <div class="field"><label>Adresse</label><input type="text" id="address_b1" placeholder="Strasse, Nr."></div>
+          <div class="field"><label>PLZ / Ort</label><input type="text" id="zipcity_b1"></div>
+        </div>
+
+        <div class="buyer-col">
+          <div class="field-row">
+            <div class="field"><label>Vorname</label><input type="text" id="firstname_b2"></div>
+            <div class="field"><label>Nachname</label><input type="text" id="lastname_b2"></div>
+          </div>
+          <div class="field">
+             <label>Geburtsdatum</label>
+             <input type="date" id="birthdate_b2">
+          </div>
+          <div class="field"><label>Zivilstand</label>
+            <select id="civil_b2">
+              <option value="">Bitte wählen</option>
+              <option value="ledig">Ledig</option>
+              <option value="verheiratet">Verheiratet</option>
+            </select>
+          </div>
+          <div class="field"><label>Adresse</label><input type="text" id="address_b2" placeholder="Falls abweichend"></div>
+          <div class="field"><label>PLZ / Ort</label><input type="text" id="zipcity_b2"></div>
+        </div>
+      </div>
+
+      <div class="section-divider"><span class="sec-num">2</span> Einkommen & Verpflichtungen</div>
+      <div class="split-grid">
+        <div class="buyer-col">
+          <div class="field"><label>Brutto-Einkommen (Jahr)</label><input type="text" id="income_b1" class="money" placeholder="CHF"></div>
+          <div class="field"><label>Bonus / Zusatz (Ø 3 Jahre)</label><input type="text" id="bonus_b1" class="money" placeholder="CHF"></div>
+          <div class="field"><label>Leasing / Kredite (Jahr)</label><input type="text" id="liabilities_b1" class="money" placeholder="CHF (Verpflichtung)"></div>
+        </div>
+        <div class="buyer-col">
+          <div class="field"><label>Brutto-Einkommen (Jahr)</label><input type="text" id="income_b2" class="money" placeholder="CHF"></div>
+          <div class="field"><label>Bonus / Zusatz (Ø 3 Jahre)</label><input type="text" id="bonus_b2" class="money" placeholder="CHF"></div>
+          <div class="field"><label>Leasing / Kredite (Jahr)</label><input type="text" id="liabilities_b2" class="money" placeholder="CHF (Verpflichtung)"></div>
+        </div>
+      </div>
+
+      <div class="section-divider"><span class="sec-num">3</span> Vorsorge & Risiken (Zukunft)</div>
+      <div class="split-grid">
+        <div class="buyer-col">
+          <div class="field"><label>Altersrente (PK + AHV)</label><input type="text" id="pension_old_b1" class="money" placeholder="Prognose Rente"></div>
+          <div class="field"><label>Erwerbsausfallrente</label><input type="text" id="pension_dis_b1" class="money" placeholder="Bei Invalidität"></div>
+          <div class="field"><label>Hinterlassenenrente</label><input type="text" id="pension_sur_b1" class="money" placeholder="Für Partner/Kind"></div>
+        </div>
+        <div class="buyer-col">
+          <div class="field"><label>Altersrente (PK + AHV)</label><input type="text" id="pension_old_b2" class="money" placeholder="Prognose Rente"></div>
+          <div class="field"><label>Erwerbsausfallrente</label><input type="text" id="pension_dis_b2" class="money" placeholder="Bei Invalidität"></div>
+          <div class="field"><label>Hinterlassenenrente</label><input type="text" id="pension_sur_b2" class="money" placeholder="Für Partner/Kind"></div>
+        </div>
+      </div>
+
+      <div class="section-divider"><span class="sec-num">4</span> Objekt, Kosten & Finanzierung</div>
+      
+      <div class="full-width-section" style="margin-bottom: 1.5rem;">
+        <h4>Objekt & Investitionen (Finanzierbar)</h4>
+        <div class="grid-3">
+          <div class="field">
+            <label>Kaufpreis Objekt</label>
+            <input type="text" id="propertyPrice" class="money" placeholder="CHF">
+          </div>
+          <div class="field">
+            <label>Baujahr (Wichtig für HEV)</label>
+            <input type="number" id="buildYear" placeholder="z.B. 2015">
+          </div>
+          <div class="field">
+            <label>Mehrkosten / Renovation</label>
+            <input type="text" id="renovationCost" class="money" placeholder="CHF">
+          </div>
+        </div>
+      </div>
+
+      <div class="full-width-section" style="margin-bottom: 1.5rem; border-left: 4px solid var(--warning);">
+        <h4>Kaufnebenkosten (Separat zu zahlen)</h4>
+        <div class="split-grid" style="margin-bottom: 0;">
+          <div class="buyer-col" style="background: #fff;">
+            <div class="field"><label>Handänderungssteuer</label><input type="text" id="tax_transfer" class="money" placeholder="CHF"></div>
+            <div class="field"><label>Notariatsgebühren</label><input type="text" id="fee_notary" class="money" placeholder="CHF"></div>
+          </div>
+          <div class="buyer-col" style="background: #fff;">
+            <div class="field"><label>Grundbuchgebühren</label><input type="text" id="fee_registry" class="money" placeholder="CHF"></div>
+            <div class="field"><label>Schuldbriefabgaben</label><input type="text" id="fee_mortgage" class="money" placeholder="CHF"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="full-width-section">
+        <h4>Vorhandene Eigenmittel</h4>
+        <div class="grid-3">
+          <div class="field"><label>Eigenkapital (Bar/Konto)</label><input type="text" id="equityCash" class="money" placeholder="Total"></div>
+          <div class="field"><label>Vorbezug 3. Säule</label><input type="text" id="equity3a" class="money" placeholder="Total"></div>
+          <div class="field"><label>Vorbezug PK (2. Säule)</label><input type="text" id="equityPK" class="money" placeholder="Total"></div>
+        </div>
+      </div>
+
+      <div class="action-area">
+        <button type="button" id="calculateBtn" class="btn-primary btn-block">Analyse erstellen</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="dashboardStage" style="display:none;">
+    
+    <section id="phase1" class="dash-section">
+      <div class="calculator-box dash-box">
+        <div class="header-image-container"><img src="traumhaus-mit-Garten.png" class="header-img-sm"></div>
+        <div class="phase-tag">Phase 1</div>
+        <h2>Anschaffung & Liquidität</h2>
+        
+        <div class="split-grid" style="text-align: left; margin-top:2rem;">
+          
+          <div class="kpi-item focus">
+            <div class="kpi-label">Benötigte Hypothek</div>
+            <div class="kpi-val-lg" id="d_mortgage">–</div>
+            <div class="badge" id="d_lending">Belehnung: –%</div>
+            <div class="kpi-sub">(Preis + Investitionen - Eigenmittel)</div>
+          </div>
+
+          <div class="kpi-item" style="border-color: var(--warning);">
+            <div class="kpi-label">Total Kaufnebenkosten</div>
+            <div class="kpi-val-lg" id="d_buyingFees">–</div>
+            <div class="kpi-sub">Notar, Steuern (Separat zu zahlen!)</div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-label">Gesamt-Investition</div>
+            <div class="kpi-val-lg" id="d_totalInvest">–</div>
+            <div class="kpi-sub">Objekt + Mehrkosten</div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-label">Totaler Liquiditätsbedarf</div>
+            <div class="kpi-val-lg" id="d_cashNeeded">–</div>
+            <div class="kpi-sub">Ihr Eigenkapital + Nebenkosten</div>
+          </div>
+
+          <div style="display:none;"><span id="d_equityTotal"></span><span id="d_equitySplit"></span></div>
+        </div>
+        <div class="hint-scroll">Nach unten scrollen für Phase 2 ↓</div>
+      </div>
+    </section>
+
+    <section id="phase2" class="dash-section">
+      <div class="calculator-box dash-box">
+        <div class="phase-tag">Phase 2</div>
+        <h2>Laufende Kosten & Sparplan</h2>
+        
+        <div class="meter-container">
+           <div class="meter-bg"><div id="d_affordabilityBar" class="meter-fill"></div></div>
+           <div class="meter-text" id="d_affordabilityText">Berechnung...</div>
+        </div>
+
+        <div class="split-grid" style="text-align: left; margin-top: 2rem;">
+          
+          <div class="kpi-item">
+            <div class="kpi-label">Kalk. Zinsen (5%)</div>
+            <div class="kpi-val-lg" id="d_interestYear">–</div>
+            <div class="kpi-sub">Sicherheitsrechnung der Bank</div>
+          </div>
+
+          <div class="kpi-item focus">
+            <div class="kpi-label">Pflicht-Amortisation</div>
+            <div class="kpi-val-lg" id="d_amortYear">–</div>
+            <div class="kpi-sub">Jährliche Rückzahlung</div>
+          </div>
+
+          <div class="kpi-item" style="border-color: var(--warning);">
+            <div class="kpi-label">Empfohlene Rückstellung</div>
+            <div class="kpi-val-lg" id="d_maintenanceSave">–</div>
+            <div class="kpi-sub">HEV-Empfehlung (Sparen!)</div>
+            <div class="badge badge-yellow" style="margin-top:0.5rem;">Nicht ausgeben!</div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-label">Energie & Wasser (ca.)</div>
+            <div class="kpi-val-lg" id="d_maintenanceReal">–</div>
+            <div class="kpi-sub">0.3% p.a. für Heizung/Strom</div>
+          </div>
+
+        </div>
+        <div class="hint-scroll">Wichtig: Vorsorge-Check unten ↓</div>
+      </div>
+    </section>
+
+    <section id="phase3" class="dash-section">
+      <div class="calculator-box dash-box">
+        <div class="phase-tag">Phase 3</div>
+        <h2>Sicherheit im Alter (Diagnose)</h2>
+        
+        <div class="split-grid" style="text-align: left; margin-top:2rem;">
+          
+          <div class="kpi-item">
+            <div class="kpi-label">Geplante Rest-Hypothek</div>
+            <div class="kpi-val-lg" id="d_restDebt">–</div>
+            <div class="kpi-sub">Nach Pensionierung</div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-label">Max. tragbare Hypothek</div>
+            <div class="kpi-val-lg" id="d_maxMortgagePension">–</div>
+            <div class="kpi-sub">Basierend auf Rente (34%)</div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-label">Tragbarkeit Rente</div>
+            <div class="kpi-val-lg" id="d_pensionAffordability">–%</div>
+            <div class="badge" id="d_pensionStatus">–</div>
+          </div>
+
+          <div class="kpi-item focus" id="box_gapTotal" style="border-color: var(--gray-200);">
+            <div class="kpi-label">Fehlendes Kapital (Lücke)</div>
+            <div class="kpi-val-lg" id="d_gapTotal">–</div>
+            <div class="kpi-sub">Hypothek ist um diesen Betrag zu hoch</div>
+            <div class="badge" id="d_gapBadge" style="margin-top:0.5rem;">–</div>
+          </div>
+
+        </div>
+
+        <div class="cta-area">
+          <p>Für dieses fehlende Kapital benötigen Sie eine Strategie. Wir zeigen Ihnen Lösungen auf.</p>
+          <button type="button" id="leadBtn" class="btn-primary btn-block">Lösung & Offerten anfordern</button>
+          <div class="disclaimer">Kostenlos & unverbindlich.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="./js/hypothek.js"></script>
+
+</body>
+</html>
