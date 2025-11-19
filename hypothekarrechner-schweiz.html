@@ -194,7 +194,7 @@
     <section id="phase2" class="dash-section">
       <div class="calculator-box dash-box">
         <div class="phase-tag">Phase 2</div>
-        <h2>Laufende Kosten & Sparplan</h2>
+        <h2>Laufende Kosten & Risiken</h2>
         
         <div class="meter-container">
            <div class="meter-bg"><div id="d_affordabilityBar" class="meter-fill"></div></div>
@@ -202,34 +202,57 @@
         </div>
 
         <div class="split-grid" style="text-align: left; margin-top: 2rem;">
-          
           <div class="kpi-item">
             <div class="kpi-label">Kalk. Zinsen (5%)</div>
             <div class="kpi-val-lg" id="d_interestYear">–</div>
-            <div class="kpi-sub">Sicherheitsrechnung der Bank</div>
           </div>
-
           <div class="kpi-item focus">
             <div class="kpi-label">Pflicht-Amortisation</div>
             <div class="kpi-val-lg" id="d_amortYear">–</div>
-            <div class="kpi-sub">Jährliche Rückzahlung</div>
           </div>
-
           <div class="kpi-item" style="border-color: var(--warning);">
             <div class="kpi-label">Empfohlene Rückstellung</div>
             <div class="kpi-val-lg" id="d_maintenanceSave">–</div>
-            <div class="kpi-sub">HEV-Empfehlung (Sparen!)</div>
-            <div class="badge badge-yellow" style="margin-top:0.5rem;">Nicht ausgeben!</div>
+            <div class="kpi-sub">0.7% (HEV) sparen</div>
           </div>
-
           <div class="kpi-item">
-            <div class="kpi-label">Energie & Wasser (ca.)</div>
+            <div class="kpi-label">Energie & Wasser</div>
             <div class="kpi-val-lg" id="d_maintenanceReal">–</div>
-            <div class="kpi-sub">0.3% p.a. für Heizung/Strom</div>
+            <div class="kpi-sub">0.3% Konsum</div>
           </div>
-
         </div>
-        <div class="hint-scroll">Wichtig: Vorsorge-Check unten ↓</div>
+
+        <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 2px dashed var(--gray-200);">
+          <h3 style="color: var(--brand); margin-bottom: 1.5rem;">⚠️ Risiko-Szenarien (Worst Case)</h3>
+          
+          <div class="split-grid" style="text-align: left;">
+            
+            <div class="kpi-item" id="box_riskInv">
+              <div class="kpi-label">Bei Erwerbsunfähigkeit</div>
+              <div class="kpi-val-lg" id="d_gapInvalidity">–</div>
+              <div class="kpi-sub">Fehlendes Einkommen p.a.</div>
+              <div class="badge" id="d_statusInvalidity" style="margin-top:0.5rem;">–</div>
+              <div style="margin-top:0.8rem; font-size:0.85rem; color:#666;">
+                Tragbarkeit Rente: <span id="d_affordInvalidity" style="font-weight:bold;">–%</span>
+              </div>
+            </div>
+
+            <div class="kpi-item" id="box_riskDeath">
+              <div class="kpi-label">Bei Todesfall (Partner)</div>
+              <div class="kpi-val-lg" id="d_gapDeath">–</div>
+              <div class="kpi-sub">Fehlendes Einkommen p.a.</div>
+              <div class="badge" id="d_statusDeath" style="margin-top:0.5rem;">–</div>
+              <div style="margin-top:0.8rem; font-size:0.85rem; color:#666;">
+                Tragbarkeit Witwe/r: <span id="d_affordDeath" style="font-weight:bold;">–%</span>
+              </div>
+            </div>
+
+          </div>
+          <p style="font-size: 0.9rem; color: #888; margin-top: 1rem;">
+            *Berechnet für den Ausfall des Hauptverdieners. Um die Tragbarkeit zu sichern, müsste dieses Einkommen durch eine Versicherung gedeckt werden.
+          </p>
+        </div>
+
       </div>
     </section>
 
@@ -283,3 +306,4 @@
 
 </body>
 </html>
+
