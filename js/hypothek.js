@@ -1,18 +1,14 @@
-// ==========================================
-// 1. INITIALISIERUNG & EVENT LISTENER
-// ==========================================
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Rechner bereit.");
+    console.log("System bereit.");
 
-    // Buttons verknüpfen
+    // 1. Buttons verknüpfen
     const calcBtn = document.getElementById('calculateBtn');
     if (calcBtn) calcBtn.addEventListener('click', startAnalysis);
 
     const leadBtn = document.getElementById('leadBtn');
     if (leadBtn) leadBtn.addEventListener('click', submitLead);
 
-    // Automatische Formatierung für Zahlenfelder (1'000er Trennzeichen)
+    // 2. Automatische 1'000er Formatierung bei Eingabe
     const moneyInputs = document.querySelectorAll('.money');
     moneyInputs.forEach(input => {
         input.addEventListener('input', (e) => {
@@ -24,11 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==========================================
-// 2. HILFSFUNKTIONEN
+// 1. HILFSFUNKTIONEN
 // ==========================================
 
 function getSafeValue(id) {
     const element = document.getElementById(id);
+    // Checkboxen behandeln wir separat in der Logik, hier nur Text/Values
     return element ? element.value : '';
 }
 
@@ -65,27 +62,42 @@ function setText(id, val) {
 
 
 // ==========================================
-// 3. HAUPT-ANALYSE
+// 2. HAUPT-ANALYSE
 // ==========================================
 
 function startAnalysis(e) {
-    if (e) e.preventDefault(); // Verhindert Neuladen der Seite
+    if (e) e.preventDefault();
 
     // --- KONSTANTEN ---
-    const LIMIT_AFFORDABILITY = 33.33; // Die strenge 33.33% Hürde
-    const RATE_CALC = 0.05; // 5% kalkulatorischer Zins
+    const LIMIT_AFFORDABILITY = 33.33; // Strenge Grenze
+    const RATE_CALC = 0.05; // 5% Kalkulatorisch
+    const ALV_MAX_INSURED = 148200; // Max versicherter Lohn ALV
 
     // --- A. DATEN EINLESEN ---
 
-    // Käufer 1
+    // Personen & Status (für ALV wichtig)
+    const civil1 = getSafeValue('civil_b1'); // 'ledig', 'verheiratet'
+    // Checkboxen sicher abfragen
+    const elKids1 = document.getElementById('has_kids_b1');
+    const hasKids1 = elKids1 ? elKids1.checked : false;
+    
+    const civil2 = getSafeValue('civil_b2');
+    const elKids2 = document.getElementById('has_kids_b2');
+    const hasKids2 = elKids2 ? elKids2.checked : false;
+
+    // Unterhaltspflicht bestimmen: Verheiratet ODER Kinder
+    const isObligated1 = (civil1 === 'verheiratet' || hasKids1);
+    const isObligated2 = (civil2 === 'verheiratet' || hasKids2);
+
+    // Finanzen Käufer 1
     const inc1 = parseMoney('income_b1');
     const bonus1 = parseMoney('bonus_b1');
-    const pensOld1 = parseMoney('pension_old_b1'); // Altersrente
-    const pensDis1 = parseMoney('pension_dis_b1'); // Invalidenrente
-    const pensSur1 = parseMoney('pension_sur_b1'); // Hinterlassenenrente (für Partner)
+    const pensOld1 = parseMoney('pension_old_b1');
+    const pensDis1 = parseMoney('pension_dis_b1');
+    const pensSur1 = parseMoney('pension_sur_b1');
     const age1 = getAge('birthdate_b1');
 
-    // Käufer 2
+    // Finanzen Käufer 2
     const inc2 = parseMoney('income_b2');
     const bonus2 = parseMoney('bonus_b2');
     const pensOld2 = parseMoney('pension_old_b2');
@@ -93,12 +105,11 @@ function startAnalysis(e) {
     const pensSur2 = parseMoney('pension_sur_b2');
     const age2 = getAge('birthdate_b2');
 
-    // Verbindlichkeiten (Schulden)
+    // Schulden & Objekt
     const liab1 = parseMoney('liabilities_b1');
     const liab2 = parseMoney('liabilities_b2');
     const totalLiabilitiesYear = liab1 + liab2;
 
-    // Objekt & Kosten
     const price = parseMoney('propertyPrice');
     const renovation = parseMoney('renovationCost');
     const buildYearVal = getSafeValue('buildYear');
@@ -125,7 +136,7 @@ function startAnalysis(e) {
     const income2_total = inc2 + bonus2;
     const totalIncome = income1_total + income2_total;
     const totalEquity = eqCash + eq3a + eqPK;
-    // Schätzung Rente (falls leer: 60% vom Lohn)
+    // Rente schätzen falls leer
     const totalPension = (pensOld1 + pensOld2) > 0 ? (pensOld1 + pensOld2) : (totalIncome * 0.6);
     const maxAge = Math.max(age1, age2);
 
@@ -133,12 +144,13 @@ function startAnalysis(e) {
     // --- C. PHASE 1: ANSCHAFFUNG ---
 
     const totalBuyingFees = tax + notary + registry + noteFee;
-    const totalObjektInvest = price + renovation; // Mehrkosten erhöhen Hypothekenbasis
+    const totalObjektInvest = price + renovation; // Mehrkosten erhöhen Hypothekar-Basis
     const mortgage = Math.max(0, totalObjektInvest - totalEquity);
     const lendingRatio = (totalObjektInvest > 0) ? (mortgage / totalObjektInvest) * 100 : 0;
     const totalCashNeeded = totalEquity + totalBuyingFees;
 
     // Output Phase 1
+    setText('d_totalIncomePhase1', fmtCHF(totalIncome));
     setText('d_mortgage', fmtCHF(mortgage));
     setText('d_lending', `Belehnung: ${lendingRatio.toFixed(1)}%`);
     setText('d_buyingFees', fmtCHF(totalBuyingFees));
@@ -150,12 +162,12 @@ function startAnalysis(e) {
     }
 
 
-    // --- D. PHASE 2: LAUFENDE KOSTEN (TRAGBARKEIT) ---
+    // --- D. PHASE 2: LAUFENDE KOSTEN ---
 
-    const max1st = totalObjektInvest * 0.6666; // 2/3 Belehnung
+    const max1st = totalObjektInvest * 0.6666;
     const mortgage2nd = Math.max(0, mortgage - max1st);
 
-    // Amortisation (Dynamisch nach Alter)
+    // 1. Amortisationsdauer (Dynamisch: Bis 65)
     let yearsToRetire = 65 - maxAge;
     let amortDuration = 15;
     if (maxAge > 0) {
@@ -163,35 +175,37 @@ function startAnalysis(e) {
         amortDuration = Math.min(15, yearsToRetire);
     }
 
-    // HEV-Satz (Baujahr)
+    // 2. HEV Satz (Baujahr)
     const currentYear = new Date().getFullYear();
-    let buildingAge = 20;
+    let buildingAge = 20; // Default Altbau
     if (buildYearVal) buildingAge = currentYear - parseInt(buildYearVal);
-    let hevRate = 0.008; // Altbau 0.8%
-    if (buildingAge <= 10) hevRate = 0.005; // Neubau 0.5%
+    
+    let hevRate = 0.008; // Altbau > 10 Jahre
+    if (buildingAge <= 10) hevRate = 0.005; // Neubau <= 10 Jahre
 
-    // Kostenkomponenten
+    // 3. Kosten Berechnung
     const interestYear = mortgage * RATE_CALC;
     const amortYear = mortgage2nd / amortDuration;
-    const maintenanceBank = totalObjektInvest * 0.01; // Bank rechnet immer 1%
-
-    // Beratungswerte (HEV)
-    const maintenanceReal = totalObjektInvest * 0.003; // ca. 0.3% Energie
+    
+    // Bank-Sicht (Pauschal 1% für Tragbarkeit)
+    const maintenanceBank = totalObjektInvest * 0.01;
+    
+    // Beratungs-Sicht (HEV)
+    const maintenanceReal = totalObjektInvest * 0.003; // ca 0.3% Energie
     const maintenanceTotalHEV = totalObjektInvest * hevRate;
     const maintenanceSave = Math.max(0, maintenanceTotalHEV - maintenanceReal);
 
-    // Tragbarkeit (Bank-Sicht)
+    // Tragbarkeit (Bank-Regeln)
     const housingCostsBank = interestYear + amortYear + maintenanceBank;
     const totalBurdenBank = housingCostsBank + totalLiabilitiesYear;
     const affordPct = (totalIncome > 0) ? (totalBurdenBank / totalIncome) * 100 : 0;
 
-    // Output Phase 2 (Basis)
+    // Output Phase 2
     setText('d_interestYear', fmtCHF(interestYear));
     setText('d_amortYear', fmtCHF(amortYear));
     setText('d_maintenanceSave', fmtCHF(maintenanceSave));
     setText('d_maintenanceReal', fmtCHF(maintenanceReal));
 
-    // Ampel Phase 2
     const bar = document.getElementById('d_affordabilityBar');
     const barText = document.getElementById('d_affordabilityText');
     if (bar) {
@@ -209,87 +223,121 @@ function startAnalysis(e) {
     }
 
 
-    // --- E. RISIKO-CHECK (INVALIDITÄT & TOD) ---
+    // --- E. RISIKO-CHECK ---
 
-    // Wir müssen wissen: Welches Einkommen ist nötig für 33.33% Tragbarkeit?
+    // Das benötigte Einkommen, um 33.33% zu erreichen
     const requiredIncome = totalBurdenBank / (LIMIT_AFFORDABILITY / 100);
 
-    // 1. Szenario: Invalidität
-    // Worst Case: Das tiefere Haushaltseinkommen bei Ausfall einer Person
-    // Fall A: Person 1 invalid -> Rente1 + Lohn2
+    // 1. ARBEITSLOSIGKEIT (ALV)
+    // ------------------------------------------------
+    function calculateALV(income, isObligated) {
+        // Deckelung auf 148'200 CHF
+        const insured = Math.min(income, ALV_MAX_INSURED);
+        // 80% wenn unterhaltspflichtig, sonst 70%
+        const rate = isObligated ? 0.80 : 0.70;
+        return insured * rate;
+    }
+
+    // Fall A: Person 1 arbeitslos
+    const alv1 = calculateALV(income1_total, isObligated1);
+    const incJob1 = alv1 + income2_total;
+
+    // Fall B: Person 2 arbeitslos
+    const alv2 = calculateALV(income2_total, isObligated2);
+    const incJob2 = income1_total + alv2;
+
+    let riskIncomeJob = Math.min(incJob1, incJob2);
+    if (totalIncome === income1_total) riskIncomeJob = alv1; // Single
+
+    const gapJob = Math.max(0, requiredIncome - riskIncomeJob);
+    const affordJobPct = (riskIncomeJob > 0) ? (totalBurdenBank / riskIncomeJob) * 100 : 0;
+
+
+    // 2. INVALIDITÄT (Rente / Einkommenslücke)
+    // ------------------------------------------------
+    // Fall A: Person 1 invalid
     const incInv1 = pensDis1 + income2_total;
-    // Fall B: Person 2 invalid -> Lohn1 + Rente2
+    // Fall B: Person 2 invalid
     const incInv2 = income1_total + pensDis2;
     
     let riskIncomeInv = Math.min(incInv1, incInv2);
-    // Spezialfall Single:
     if (totalIncome === income1_total) riskIncomeInv = pensDis1;
 
     const gapInv = Math.max(0, requiredIncome - riskIncomeInv);
     const affordInvPct = (riskIncomeInv > 0) ? (totalBurdenBank / riskIncomeInv) * 100 : 0;
 
-    // 2. Szenario: Todesfall
-    // Fall A: Person 1 stirbt -> Lohn2 + Hinterlassenenrente(für 2)
-    const incDeath1 = income2_total + pensSur1; // Rente aus der PK von Person 1
-    // Fall B: Person 2 stirbt -> Lohn1 + Hinterlassenenrente(für 1)
+
+    // 3. TODESFALL (Kapitalbedarf)
+    // ------------------------------------------------
+    // Fall A: Person 1 stirbt
+    const incDeath1 = income2_total + pensSur1;
+    // Fall B: Person 2 stirbt
     const incDeath2 = income1_total + pensSur2;
-
+    
     let riskIncomeDeath = Math.min(incDeath1, incDeath2);
-    if (totalIncome === income1_total) riskIncomeDeath = pensSur1; // Single (Erben?)
+    if (totalIncome === income1_total) riskIncomeDeath = pensSur1;
 
-    const gapDeath = Math.max(0, requiredIncome - riskIncomeDeath);
     const affordDeathPct = (riskIncomeDeath > 0) ? (totalBurdenBank / riskIncomeDeath) * 100 : 0;
 
-    // Output Risiko
-    setText('d_gapInvalidity', fmtCHF(gapInv));
-    setText('d_affordInvalidity', affordInvPct.toFixed(1) + "%");
+    // Kapitalberechnung: Wie viel Hypothek muss weg?
+    // Wie viel darf die Belastung max sein mit dem Witweneinkommen?
+    const maxBurdenDeath = riskIncomeDeath * (LIMIT_AFFORDABILITY / 100);
+    const annualShortfallDeath = Math.max(0, totalBurdenBank - maxBurdenDeath);
     
-    // Badge Invalidität
-    const badgeInv = document.getElementById('d_statusInvalidity');
-    const boxInv = document.getElementById('box_riskInv');
-    if (badgeInv) {
-        if (gapInv > 0) {
-            badgeInv.textContent = "Versicherungslücke!";
-            badgeInv.className = "badge badge-red";
-            if(boxInv) boxInv.style.borderLeft = "4px solid var(--danger)";
-        } else {
-            badgeInv.textContent = "Tragbarkeit OK";
-            badgeInv.className = "badge badge-green";
-            if(boxInv) boxInv.style.borderLeft = "4px solid var(--good)";
-        }
+    // Hebel: 5% Zins + Amortisationssatz
+    const amortRate = (mortgage > 0) ? (amortYear / mortgage) : 0;
+    const serviceRate = RATE_CALC + amortRate;
+    
+    let capitalGapDeath = 0;
+    if (annualShortfallDeath > 0 && serviceRate > 0) {
+        capitalGapDeath = annualShortfallDeath / serviceRate;
     }
 
-    // Output Todesfall
-    setText('d_gapDeath', fmtCHF(gapDeath));
+
+    // OUTPUT RISIKO
+    
+    // ALV
+    setText('d_gapJob', fmtCHF(gapJob));
+    setText('d_affordJob', affordJobPct.toFixed(1) + "%");
+    updateRiskBadge('d_statusJob', 'box_riskJob', gapJob, "Einkommens-Lücke!", "Abgedeckt (ALV)");
+
+    // Invalidität
+    setText('d_gapInvalidity', fmtCHF(gapInv));
+    setText('d_affordInvalidity', affordInvPct.toFixed(1) + "%");
+    updateRiskBadge('d_statusInvalidity', 'box_riskInv', gapInv, "Renten-Lücke!", "Abgedeckt");
+
+    // Tod (Kapital)
+    setText('d_gapDeath', fmtCHF(capitalGapDeath));
     setText('d_affordDeath', affordDeathPct.toFixed(1) + "%");
     
+    // Badge Tod
     const badgeDeath = document.getElementById('d_statusDeath');
     const boxDeath = document.getElementById('box_riskDeath');
     if (badgeDeath) {
-        if (gapDeath > 0) {
-            badgeDeath.textContent = "Versicherungslücke!";
+        if (capitalGapDeath > 0) {
+            badgeDeath.textContent = "Kapitalbedarf!";
             badgeDeath.className = "badge badge-red";
             if(boxDeath) boxDeath.style.borderLeft = "4px solid var(--danger)";
         } else {
-            badgeDeath.textContent = "Tragbarkeit OK";
+            badgeDeath.textContent = "Abgedeckt";
             badgeDeath.className = "badge badge-green";
             if(boxDeath) boxDeath.style.borderLeft = "4px solid var(--good)";
         }
     }
 
 
-    // --- F. PHASE 3: ZUKUNFT (RENTE) ---
+    // --- F. PHASE 3: ZUKUNFT (GAP) ---
 
-    const restDebt = Math.min(mortgage, max1st); // 2. Hyp ist weg
+    const restDebt = Math.min(mortgage, max1st);
 
-    // Max Hypothek im Alter (Basis 33.33%)
+    // Max Hypothek Rente (33.33% Tragbarkeit)
     const maxAffordableCostPension = totalPension * (LIMIT_AFFORDABILITY / 100);
     const availableForInterest = maxAffordableCostPension - maintenanceBank - totalLiabilitiesYear;
     const maxMortgagePension = Math.max(0, availableForInterest / RATE_CALC);
 
-    // Lücke (Gap)
+    // Lücke (Total)
     const fundingGap = Math.max(0, restDebt - maxMortgagePension);
-
+    
     // Tragbarkeit Rente
     const interestPension = restDebt * RATE_CALC;
     const burdenPension = interestPension + maintenanceBank + totalLiabilitiesYear;
@@ -309,12 +357,12 @@ function startAnalysis(e) {
             gapBadge.className = "badge badge-red";
             if(boxGap) boxGap.style.borderColor = "var(--danger)";
         } else {
-            gapBadge.textContent = "Finanzierung gesichert";
+            gapBadge.textContent = "Gesichert";
             gapBadge.className = "badge badge-green";
             if(boxGap) boxGap.style.borderColor = "var(--good)";
         }
     }
-
+    
     const penBadge = document.getElementById('d_pensionStatus');
     if (penBadge) {
         if (affordPensionPct <= 33.33) {
@@ -337,7 +385,24 @@ function startAnalysis(e) {
     }
 }
 
+// Kleiner Helfer für Badges
+function updateRiskBadge(badgeId, boxId, value, textBad, textGood) {
+    const badge = document.getElementById(badgeId);
+    const box = document.getElementById(boxId);
+    if (badge) {
+        if (value > 0) {
+            badge.textContent = textBad;
+            badge.className = "badge badge-red";
+            if(box) box.style.borderLeft = "4px solid var(--danger)";
+        } else {
+            badge.textContent = textGood;
+            badge.className = "badge badge-green";
+            if(box) box.style.borderLeft = "4px solid var(--good)";
+        }
+    }
+}
+
 function submitLead(e) {
     if (e) e.preventDefault();
-    alert("Vielen Dank! Ihre Daten wurden zur Prüfung übermittelt.");
+    alert("Vielen Dank! Die Daten wurden übermittelt.");
 }
