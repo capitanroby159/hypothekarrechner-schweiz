@@ -37,10 +37,7 @@
             <div class="field"><label>Vorname</label><input type="text" id="firstname_b1"></div>
             <div class="field"><label>Nachname</label><input type="text" id="lastname_b1"></div>
           </div>
-          <div class="field">
-            <label>Geburtsdatum (Wichtig für Amortisation)</label>
-            <input type="date" id="birthdate_b1">
-          </div>
+          <div class="field"><label>Geburtsdatum</label><input type="date" id="birthdate_b1"></div>
           <div class="field"><label>Zivilstand</label>
             <select id="civil_b1">
               <option value="ledig">Ledig</option>
@@ -48,6 +45,11 @@
               <option value="geschieden">Geschieden</option>
             </select>
           </div>
+          <div class="field" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+            <input type="checkbox" id="has_kids_b1" style="width:auto; margin:0;">
+            <label for="has_kids_b1" style="margin:0; font-weight:400;">Unterhaltspflicht (Kinder)?</label>
+          </div>
+          
           <div class="field"><label>Adresse</label><input type="text" id="address_b1" placeholder="Strasse, Nr."></div>
           <div class="field"><label>PLZ / Ort</label><input type="text" id="zipcity_b1"></div>
         </div>
@@ -57,10 +59,7 @@
             <div class="field"><label>Vorname</label><input type="text" id="firstname_b2"></div>
             <div class="field"><label>Nachname</label><input type="text" id="lastname_b2"></div>
           </div>
-          <div class="field">
-             <label>Geburtsdatum</label>
-             <input type="date" id="birthdate_b2">
-          </div>
+          <div class="field"><label>Geburtsdatum</label><input type="date" id="birthdate_b2"></div>
           <div class="field"><label>Zivilstand</label>
             <select id="civil_b2">
               <option value="">Bitte wählen</option>
@@ -68,6 +67,11 @@
               <option value="verheiratet">Verheiratet</option>
             </select>
           </div>
+          <div class="field" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+            <input type="checkbox" id="has_kids_b2" style="width:auto; margin:0;">
+            <label for="has_kids_b2" style="margin:0; font-weight:400;">Unterhaltspflicht (Kinder)?</label>
+          </div>
+
           <div class="field"><label>Adresse</label><input type="text" id="address_b2" placeholder="Falls abweichend"></div>
           <div class="field"><label>PLZ / Ort</label><input type="text" id="zipcity_b2"></div>
         </div>
@@ -306,4 +310,5 @@
 
 </body>
 </html>
+
 
